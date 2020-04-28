@@ -38,18 +38,7 @@ slackEvents.on("message", (event) => {
     } else if (event.ts - previous[1] >= 60) {
       yikes("Error: Rush", event.ts, event.user);
     } else if (isNaN(Number(event.text))) {
-      yikes("Error: Not a number", _, event.user);
-
-      // delete message in 10 seconds
-      setTimeout(
-        (async () => {
-          const res = await web.chat.delete({
-            channel: monitoringChannel,
-            ts: event.ts,
-          });
-        })(),
-        10000
-      );
+      yikes("Error: Not a number", event.ts, event.user);
     } else if (Number(event.text) != counter + 1) {
       yikes("Error: Incorrect number", event.ts, event.user);
     } else {
