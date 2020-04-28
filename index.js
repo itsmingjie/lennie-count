@@ -48,7 +48,7 @@ slackEvents.on("message", (event) => {
           name: "ok",
           timestamp: event.ts,
         });
-    
+
         console.log("Reaction sent: ", res.ts);
       })();
     }
@@ -56,28 +56,53 @@ slackEvents.on("message", (event) => {
 });
 
 let yikes = (reason, ts, user) => {
-  base("Score").create(
-    [
-      {
-        fields: {
-          timestamp: Number(ts),
-          Score: counter,
-          "Broken By": user,
-        },
+  base("Score")
+    .select({
+      // Selecting the first 3 records in Grid view:
+      maxRecords: 1,
+      view: "Grid view",
+      sort: [{ field: "Score", direction: "desc" }],
+    })
+    .eachPage(
+      function page(records, fetchNextPage) {
+        // This function (`page`) will get called for each page of records.
+
+        records.forEach(function (record) {
+          if (score >= record.get("Score")) {
+            base("Score").create(
+              [
+                {
+                  fields: {
+                    timestamp: Number(ts),
+                    Score: counter,
+                    "Broken By": user,
+                  },
+                },
+              ],
+              function (err, records) {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+              }
+            );
+          }
+        });
+
+        fetchNextPage();
       },
-    ],
-    function (err, records) {
-      if (err) {
-        console.error(err);
-        return;
+      function done(err) {
+        if (err) {
+          console.error(err);
+          return;
+        }
       }
-    }
-  );
+    );
 
   counter = 0;
   previous = ["", 9999999999999];
 
-  const rule = `1. You must count in order, starting with 1\n2. The same user cannot count two consecutive numbers\n3. A timer will be set for 60 seconds every time a new number is added. When the timer runs out, the game resets.\n4. All messages in this channel must be valid counting numbers.`
+  const rule = `1. You must count in order, starting with 1\n2. The same user cannot count two consecutive numbers\n3. A timer will be set for 60 seconds every time a new number is added. When the timer runs out, the game resets.\n4. All messages in this channel must be valid counting numbers.`;
 
   base("Score")
     .select({
