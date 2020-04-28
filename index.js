@@ -25,6 +25,7 @@ slackEvents.on("message", (event) => {
   console.log(`User ${event.user} in channel ${event.channel} messaged`);
 
   console.log(event.ts);
+  console.log(event.subtype);
 
   if (event.subtype && event.channel == monitoringChannel && event.user != undefined) {
     if (event.user == previous[0]) {
