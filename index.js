@@ -56,48 +56,25 @@ slackEvents.on("message", (event) => {
 });
 
 let yikes = (reason, ts, user) => {
-  base("Score")
-    .select({
-      // Selecting the first 3 records in Grid view:
-      maxRecords: 1,
-      view: "Grid view",
-      sort: [{ field: "Score", direction: "desc" }],
-    })
-    .eachPage(
-      function page(records, fetchNextPage) {
-        // This function (`page`) will get called for each page of records.
-
-        records.forEach(function (record) {
-          if (counter >= record.get("Score")) {
-            base("Score").create(
-              [
-                {
-                  fields: {
-                    timestamp: Number(ts),
-                    Score: counter,
-                    "Broken By": user,
-                  },
-                },
-              ],
-              function (err, records) {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-              }
-            );
-          }
-        });
-
-        fetchNextPage();
-      },
-      function done(err) {
+  if (counter > 0) {
+    base("Score").create(
+      [
+        {
+          fields: {
+            timestamp: Number(ts),
+            Score: counter,
+            "Broken By": user,
+          },
+        },
+      ],
+      function (err, records) {
         if (err) {
           console.error(err);
           return;
         }
       }
     );
+  }
 
   counter = 0;
   previous = ["", 9999999999999];
