@@ -94,6 +94,7 @@ let yikes = (reason, ts, user) => {
           (async () => {
             const res = await web.chat.postMessage({
               channel: monitoringChannel,
+              thread_ts: ts,
               text: `Oh, so ya forgot that too, did ya? Well, I ain’t gonna remind ya, fear ya do it again. It's time to start over!\n\n*Rules:*\n${rule}\n\nHigh score: ${record.get(
                 "Score"
               )}`,
