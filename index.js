@@ -68,7 +68,7 @@ let yikes = (reason, ts, user) => {
         // This function (`page`) will get called for each page of records.
 
         records.forEach(function (record) {
-          if (score >= record.get("Score")) {
+          if (counter >= record.get("Score")) {
             base("Score").create(
               [
                 {
