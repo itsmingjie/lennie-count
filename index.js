@@ -27,7 +27,11 @@ slackEvents.on("message", (event) => {
   console.log(event.ts);
   console.log(event.subtype);
 
-  if (typeof event.subtype == 'undefined' && event.channel == monitoringChannel && event.user != undefined) {
+  if (
+    typeof event.subtype == "undefined" &&
+    event.channel == monitoringChannel &&
+    event.user != undefined
+  ) {
     if (event.user == previous[0]) {
       // duplicate user -- error
       yikes("Error: Duplicate user", event.ts, event.user);
@@ -35,14 +39,17 @@ slackEvents.on("message", (event) => {
       yikes("Error: Rush", event.ts, event.user);
     } else if (Number(event.text) == NaN) {
       yikes("Error: Not a number", _, event.user);
-      
+
       // delete message in 10 seconds
-      setTimeout(() => {
-        await web.chat.delete({
-          channel: monitoringChannel,
-          ts: event.ts
-        })
-      }, 10000)
+      setTimeout(
+        (async () => {
+          const res = await web.chat.delete({
+            channel: monitoringChannel,
+            ts: event.ts,
+          });
+        })(),
+        10000
+      );
     } else if (Number(event.text) != counter + 1) {
       yikes("Error: Incorrect number", event.ts, event.user);
     } else {
@@ -65,7 +72,6 @@ slackEvents.on("message", (event) => {
 });
 
 let yikes = (reason, ts, user) => {
-
   if (counter > 0) {
     base("Score").create(
       [
