@@ -37,7 +37,7 @@ slackEvents.on("message", (event) => {
       yikes("Error: Duplicate user", event.ts, event.user);
     } else if (event.ts - previous[1] >= 60) {
       yikes("Error: Rush", event.ts, event.user);
-    } else if (Number(event.text) == NaN) {
+    } else if (isNaN(Number(event.text))) {
       yikes("Error: Not a number", _, event.user);
 
       // delete message in 10 seconds
