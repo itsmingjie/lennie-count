@@ -26,7 +26,7 @@ slackEvents.on("message", (event) => {
 
   console.log(event.ts);
 
-  if (event.channel == monitoringChannel && event.user != undefined) {
+  if (body.message.subtype && event.channel == monitoringChannel && event.user != undefined) {
     if (event.user == previous[0]) {
       // duplicate user -- error
       yikes("Error: Duplicate user", event.ts, event.user);
