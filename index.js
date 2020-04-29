@@ -25,7 +25,7 @@ slackEvents.on("message", (event) => {
   console.log(`User ${event.user} in channel ${event.channel} messaged`);
 
   console.log(event.ts);
-  console.log(event.subtype);
+  console.log(event);
 
   if (
     typeof event.subtype == "undefined" &&
